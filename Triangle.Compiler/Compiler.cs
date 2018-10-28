@@ -41,10 +41,10 @@ namespace Triangle.Compiler
 			string sourceFileName = args[0];
 			if ( sourceFileName != null ) {
 				var compiler = new Compiler( sourceFileName );
-//        foreach (var token in compiler.scanner) {
-//          Console.WriteLine(token);
-//        }
-//        compiler.source.Reset(); //uncomment to reset source code.
+				foreach (var token in compiler.scanner) {
+					Console.WriteLine(token);
+				}
+				compiler.source.Reset(); //uncomment to reset source code.
 				compiler.parser.ParseProgram();
 			}
 		}

@@ -107,11 +107,11 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// <returns>The type of the next token</returns>
 		private TokenKind ScanToken() {
 			if ( IsOperator( source.Current ) ) {
-// operator
+				// operator
 				TakeIt();
 				return TokenKind.Operator;
 			} else if ( char.IsLetter( source.Current ) ) {
-// identifier
+				// identifier
 				while ( char.IsLetter( source.Current ) ||
 					char.IsDigit( source.Current ) || source.Current == '_' )
 					TakeIt();
@@ -121,7 +121,7 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 
 				return TokenKind.Identifier;
 			} else if (char.IsDigit(source.Current)) {
-// integer
+				// integer
 				TakeIt();
 				while ( char.IsDigit(source.Current )) TakeIt();
 				return TokenKind.IntLiteral;
@@ -129,9 +129,8 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 
 			switch ( source.Current ) {
 				case '\'':
-// char literal
+					// char literal
 					TakeIt();
-
 					// attempt to find a 'graphic'
 					if ( char.IsLetter( source.Current ) ||
 								char.IsDigit( source.Current ) ||
@@ -142,20 +141,22 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 								source.Current == '_' ||
 								source.Current == ' ' ) TakeIt();
 					else return TokenKind.Error;
+
+					// if the next char is a ' then we have a char lit else its an error
 					if ( source.Current == '\'' ) TakeIt();
 					else return TokenKind.Error;
 
 					return TokenKind.CharLiteral;
 				case '(':
-// left bracket
+					// left bracket
 					TakeIt();
 					return TokenKind.LeftBracket;
 				case ')':
-// right bracket
+					// right bracket
 					TakeIt();
 					return TokenKind.RightBracket;
 				case ':':
-// becomes || colon
+					// becomes || colon
 					TakeIt();
 					if ( source.Current == '=' ) {
 						TakeIt();
@@ -163,15 +164,15 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					}
 					return TokenKind.Colon;
 				case ';':
-// semicolon
+					// semicolon
 					TakeIt();
 					return TokenKind.Semicolon;
 				case '~':
-// is
+					// is
 					TakeIt();
 					return TokenKind.Is;
 				case ',':
-// comma
+					// comma
 					TakeIt();
 					return TokenKind.Comma;
 				case default( char ):
