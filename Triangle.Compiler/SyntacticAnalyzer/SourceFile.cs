@@ -54,7 +54,9 @@ namespace Triangle.Compiler.SyntacticAnalyzer
         /// <summary>
         /// Gets the location of the current character
         /// </summary>
-        public Location Location { get { throw new NotImplementedException(); } }
+        public Location Location {
+					get { return new Location( lineNumber, index); }
+				}
 
 
 

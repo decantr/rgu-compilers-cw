@@ -32,6 +32,8 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// </summary>
 		public bool Debug { get; set; }
 
+		public Location startLocation { get; set; }
+
 		/// <summary>
 		/// Lookup table of reserved words used to screen tokens
 		/// </summary>
@@ -67,12 +69,12 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 				currentSpelling.Clear();
 				ScanWhiteSpace();
 
-				// Location startLocation = source.Location;
+				startLocation = source.Location;
 				TokenKind kind = ScanToken();
-				// Location endLocation = source.Location;
-				// SourcePosition position = new SourcePosition(startLocation, endLocation);
+				Location endLocation = source.Location;
+				SourcePosition position = new SourcePosition(startLocation, endLocation);
 
-				Token token = new Token(kind, currentSpelling.ToString());
+				Token token = new Token(kind, currentSpelling.ToString(), position);
 
 				if (kind == TokenKind.EndOfText)
 					atEndOfFile = true;
@@ -115,8 +117,7 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 				return TokenKind.Operator;
 			} else if ( char.IsLetter( source.Current ) ) {
 				// identifier
-				while ( char.IsLetter( source.Current ) ||
-					char.IsDigit( source.Current ) || source.Current == '_' )
+				while ( char.IsLetterOrDigit( source.Current ) || source.Current == '_' )
 					TakeIt();
 
 				if ( ReservedWords.TryGetValue( currentSpelling.ToString(), out TokenKind reservedWordType ) )
@@ -135,19 +136,17 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					// char literal
 					TakeIt();
 					// attempt to find a 'graphic'
-					if ( char.IsLetter( source.Current ) ||
-								char.IsDigit( source.Current ) ||
-								IsOperator( source.Current ) ||
-								source.Current == '.' ||
-								source.Current == '!' ||
-								source.Current == '?' ||
-								source.Current == '_' ||
-								source.Current == ' ' ) TakeIt();
-					else return TokenKind.Error;
-
+					if ( IsGraphic( source.Current ) ) TakeIt();
+					else {
+						System.Console.WriteLine( "error: not a valid char for charLiteral at line " +  startLocation);
+						return TokenKind.Error;
+					}
 					// if the next char is a ' then we have a char lit else its an error
 					if ( source.Current == '\'' ) TakeIt();
-					else return TokenKind.Error;
+					else {
+						System.Console.WriteLine( "error: charLiteral not terminated" );
+						return TokenKind.Error;
+					}
 
 					return TokenKind.CharLiteral;
 				case '(':
@@ -217,6 +216,28 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 				default:
 					return false;
 			}
+		}
+
+		/// <summary>
+		/// Checks whether a character is an graphic
+		/// </summary>
+		/// <param name="c">The character to check</param>
+		/// <returns>True if and only if the character is an graphic in the language</returns>
+		private static bool IsGraphic(char c) {
+			switch ( c ) {
+				case '.':
+				case '!':
+				case '?':
+				case '_':
+				case ' ':
+					return true;
+				default:
+					break;
+			}
+			if ( char.IsLetterOrDigit( c ) || IsOperator( c ))
+				return true;
+			else return false;
+
 		}
 	}
 }

@@ -8,12 +8,13 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 	public partial class Parser {
 
 		Scanner scanner;
+		ErrorReporter reporter;
 
 		IEnumerator<Token> tokens;
 
-		public Parser( Scanner scanner ) {
+		public Parser( Scanner scanner , ErrorReporter reporter ) {
 			this.scanner = scanner;
-			//errorReporter = errorReporter;
+			this.reporter = reporter;
 			//previousLocation = Location.Empty;
 			tokens = this.scanner.GetEnumerator();
 		}

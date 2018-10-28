@@ -17,6 +17,7 @@ namespace Triangle.Compiler
 		/// </summary>
 		private Scanner scanner;
 		private Parser parser;
+		private ErrorReporter reporter;
 
 		/// <summary>
 		/// Creates a compiler for the given source file.
@@ -25,7 +26,8 @@ namespace Triangle.Compiler
 		Compiler( string sourceFileName ) {
 			source = new SourceFile( sourceFileName );
 			scanner = new Scanner( source );
-			parser = new Parser( scanner );
+			reporter = new ErrorReporter();
+			parser = new Parser( scanner , reporter );
 		}
 
 
@@ -41,10 +43,11 @@ namespace Triangle.Compiler
 			string sourceFileName = args[0];
 			if ( sourceFileName != null ) {
 				var compiler = new Compiler( sourceFileName );
-				foreach (var token in compiler.scanner) {
-					Console.WriteLine(token);
-				}
-				compiler.source.Reset(); //uncomment to reset source code.
+
+				foreach ( var token in compiler.scanner )
+					Console.WriteLine( token );
+				compiler = new Compiler( sourceFileName );
+
 				compiler.parser.ParseProgram();
 			}
 		}

@@ -52,10 +52,13 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					AcceptIt();
 					break;
 				case TokenKind.Skip:
+					// accept this differently as there is not a second statement
+					AcceptIt();
 					AcceptIt();
 					break;
 				default:
-					System.Console.WriteLine( "error" );
+					reporter.ReportError( "command" , tokens.Current );
+					AcceptIt();
 					break;
 			}
 		}

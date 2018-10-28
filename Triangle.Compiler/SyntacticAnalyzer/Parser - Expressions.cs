@@ -42,7 +42,8 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					Accept( TokenKind.RightBracket );
 					break;
 				default:
-					System.Console.WriteLine( "error" );
+					reporter.ReportError( "Expression" , tokens.Current );
+					AcceptIt();
 					break;
 			}
 		}

@@ -33,7 +33,8 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					}
 					break;
 				default:
-					System.Console.WriteLine( "error" );
+					reporter.ReportError( "declaration" , tokens.Current );
+					AcceptIt();
 					break;
 			}
 		}
