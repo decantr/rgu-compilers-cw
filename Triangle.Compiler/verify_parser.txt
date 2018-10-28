@@ -1,0 +1,167 @@
+parsing Program
+parsing command
+parsing single command
+parsing declaration
+parsing single declaration
+parsing identifier
+parsing expression
+parsing primary expression
+parsing intLiteral
+parsing single declaration
+parsing identifier
+parsing type denoter
+parsing identifier
+parsing single command
+parsing command
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing intLiteral
+parsing single command
+parsing expression
+parsing primary expression
+parsing variable name
+parsing identifier
+parsing operator
+parsing primary expression
+parsing intLiteral
+parsing single command
+parsing expression
+parsing primary expression
+parsing variable name
+parsing identifier
+parsing operator
+parsing primary expression
+parsing operator
+parsing primary expression
+parsing variable name
+parsing identifier
+parsing single command
+parsing expression
+parsing primary expression
+parsing variable name
+parsing identifier
+parsing operator
+parsing primary expression
+parsing intLiteral
+parsing single command
+parsing command
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing variable name
+parsing identifier
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing variable name
+parsing identifier
+parsing operator
+parsing primary expression
+parsing intLiteral
+parsing single command
+parsing command
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing command
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
+parsing single command
+parsing variable name
+parsing identifier
+parsing expression
+parsing primary expression
+parsing charLiteral
