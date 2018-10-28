@@ -1,10 +1,11 @@
-namespace Triangle.Compiler.SyntacticAnalyzer
-{
-    /// <summary>
-    /// Types of token in the source language
-    /// </summary>
-    public enum TokenKind
-    {
+/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
+ * @Date:   10-Oct-172017
+ */
+
+// Types of token in the source language
+namespace Triangle.Compiler.SyntacticAnalyzer {
+    public enum TokenKind {
+
         // non-terminals
         IntLiteral, Identifier, Operator,
 

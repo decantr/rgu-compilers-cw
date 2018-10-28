@@ -1,18 +1,9 @@
-/**
- * @Author: John Isaacs <john>
+/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
  * @Date:   10-Oct-172017
- * @Filename: Parser - Commands.cs
- * @Last modified by:   john
- * @Last modified time: 19-Oct-172017
  */
 
 namespace Triangle.Compiler.SyntacticAnalyzer {
 	public partial class Parser {
-		////////////////////////////////////////////////////////////////////////////
-		//
-		// COMMANDS
-		//
-		////////////////////////////////////////////////////////////////////////////
 
 		/// Parses the command error
 		void ParseCommand() {

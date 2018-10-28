@@ -1,4 +1,8 @@
-﻿namespace Triangle.Compiler.SyntacticAnalyzer {
+﻿/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
+ * @Date:   10-Oct-172017
+ */
+
+namespace Triangle.Compiler.SyntacticAnalyzer {
     /// <summary>
     /// A location in a file
     /// </summary>

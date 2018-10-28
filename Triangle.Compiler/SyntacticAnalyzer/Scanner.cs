@@ -4,11 +4,14 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
+/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
+ * @Date:   10-Oct-172017
+ */
+
+// Scanner for the triangle language
 namespace Triangle.Compiler.SyntacticAnalyzer {
-	/// <summary>
-	/// Scanner for the triangle language
-	/// </summary>
 	public class Scanner : IEnumerable<Token> {
+
 		/// <summary>
 		/// The file being read from
 		/// </summary>
