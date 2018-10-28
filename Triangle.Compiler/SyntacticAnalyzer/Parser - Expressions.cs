@@ -25,11 +25,11 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					ParseCharLiteral();
 					break;
 				case TokenKind.Identifier:
-					ParseVname();
-					if ( tokens.Current.Kind == TokenKind.LeftBracket ) {
+					ParseIdentifier();
+					if ( tokens.Current.Kind == TokenKind.RightBracket ) {
 						AcceptIt();
 						ParseActualParamater();
-						AcceptIt();
+						Accept( TokenKind.RightBracket );
 					}
 					break;
 				case TokenKind.Operator:
@@ -43,7 +43,6 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					break;
 				default:
 					reporter.ReportError( "Expression" , tokens.Current );
-					AcceptIt();
 					break;
 			}
 		}

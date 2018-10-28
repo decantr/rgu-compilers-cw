@@ -26,7 +26,7 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					AcceptIt();
 					ParseIdentifier();
 					Accept( TokenKind.Colon );
-					ParseIdentifier();
+					ParseTypeDenoter();
 					if ( tokens.Current.Kind == TokenKind.Becomes) {
 						AcceptIt();
 						ParseExpression();
@@ -34,7 +34,6 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					break;
 				default:
 					reporter.ReportError( "declaration" , tokens.Current );
-					AcceptIt();
 					break;
 			}
 		}

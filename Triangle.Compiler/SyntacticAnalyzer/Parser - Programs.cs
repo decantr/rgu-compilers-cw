@@ -8,6 +8,9 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		public void ParseProgram() {
 			System.Console.WriteLine( "parsing Program" );
 			tokens.MoveNext();
+			if ( tokens.Current.Kind == TokenKind.Error ) {
+				reporter.ReportError( "program" , tokens.Current );
+			}
 			//var startLocation = _tokens.Current.Start;
 			ParseCommand();
 		}

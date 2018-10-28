@@ -3,7 +3,10 @@ begin
 	! hello	
 	skip;
 	'b'
+	skip;
 	'aa'
+	skip;
 	''
+	skip;
 	'a
 end

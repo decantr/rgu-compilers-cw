@@ -20,11 +20,14 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 			System.Console.WriteLine( "parsing single command" );
 			switch ( tokens.Current.Kind ) {
 				case TokenKind.Identifier:
-					ParseVname();
-					AcceptIt();
-					ParseExpression();
-					if ( tokens.Current.Kind == TokenKind.RightBracket )
+					ParseIdentifier();
+					if ( tokens.Current.Kind == TokenKind.Becomes ) {
 						AcceptIt();
+						ParseExpression();
+					} else if ( tokens.Current.Kind == TokenKind.LeftBracket ) {
+						AcceptIt();
+						ParseActualParamater();
+					}
 					break;
 				case TokenKind.If:
 					AcceptIt();
@@ -58,7 +61,6 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 					break;
 				default:
 					reporter.ReportError( "command" , tokens.Current );
-					AcceptIt();
 					break;
 			}
 		}
