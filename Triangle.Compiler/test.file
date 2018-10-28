@@ -1,0 +1,9 @@
+begin
+	# hello
+	! hello	
+	skip;
+	'b'
+	'aa'
+	''
+	'a
+end
