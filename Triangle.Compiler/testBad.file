@@ -1,12 +1,10 @@
 begin
-	# hello
+	if ( a = 1 ) then 
+	skip;
 	! hello	
 	skip;
 	'b'
 	skip;
-	'aa'
-	skip;
-	''
-	skip;
-	'a
 end
+
+'a
