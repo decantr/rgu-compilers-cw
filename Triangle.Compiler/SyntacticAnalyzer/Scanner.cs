@@ -4,14 +4,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
- * @Date:   10-Oct-172017
- */
-
-// Scanner for the triangle language
-namespace Triangle.Compiler.SyntacticAnalyzer {
-	public class Scanner : IEnumerable<Token> {
-
+namespace Triangle.Compiler.SyntacticAnalyzer
+{
+	/// <summary>
+	/// Scanner for the triangle language
+	/// </summary>
+	public class Scanner : IEnumerable<Token>
+	{
 		/// <summary>
 		/// The file being read from
 		/// </summary>
@@ -27,12 +26,7 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// </summary>
 		private bool atEndOfFile = false;
 
-		/// <summary>
-		/// Whether to perform debugging
-		/// </summary>
-		public bool Debug { get; set; }
 
-		public Location startLocation { get; set; }
 
 		/// <summary>
 		/// Lookup table of reserved words used to screen tokens
@@ -42,21 +36,27 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 				.Cast<TokenKind>()
 				.ToImmutableDictionary(kind => kind.ToString().ToLower(), kind => kind);
 
+
+
 		/// <summary>
 		/// Creates a new scanner
 		/// </summary>
 		/// <param name="source">The file to read the characters from</param>
-		public Scanner( SourceFile source ) {
+		public Scanner(SourceFile source)
+		{
 			this.source = source;
 			this.source.Reset();
 			currentSpelling = new StringBuilder();
 		}
 
+
+
 		/// <summary>
 		/// Returns the tokens in the source file
 		/// </summary>
 		/// <returns>The sequence of tokens that are found in the source code</returns>
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
 			return GetEnumerator();
 		}
 
@@ -64,12 +64,14 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// Returns the tokens in the source file
 		/// </summary>
 		/// <returns>The sequence of tokens that are found in the source code</returns>
-		public IEnumerator<Token> GetEnumerator() {
-			while ( !atEndOfFile ) {
+		public IEnumerator<Token> GetEnumerator()
+		{
+			while (!atEndOfFile)
+			{
 				currentSpelling.Clear();
 				ScanWhiteSpace();
 
-				startLocation = source.Location;
+				Location startLocation = source.Location;
 				TokenKind kind = ScanToken();
 				Location endLocation = source.Location;
 				SourcePosition position = new SourcePosition(startLocation, endLocation);
@@ -79,8 +81,7 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 				if (kind == TokenKind.EndOfText)
 					atEndOfFile = true;
 
-				if (Debug)
-					Console.WriteLine(token);
+				Compiler.WriteDebuggingInfo($"Scanned {token}");
 
 				yield return token;
 			}
@@ -91,153 +92,183 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// <summary>
 		/// Skips over any whitespace
 		/// </summary>
-		private void ScanWhiteSpace() {
+		private void ScanWhiteSpace()
+		{
 			while (source.Current == '!' || source.Current == ' ' || source.Current == '\t' || source.Current == '\n')
+			{
 				ScanSeparator();
+			}
 		}
 
 		/// <summary>
 		/// Skips a single separator
 		/// </summary>
-		private void ScanSeparator() {
-			switch (source.Current) {
-				case '!': source.SkipRestOfLine(); break;
-				default: source.MoveNext(); break;
-			}
+		private void ScanSeparator()
+		{
+			if (source.Current == '!')
+				source.SkipRestOfLine();
+			else
+				source.MoveNext();
 		}
 
 		/// <summary>
 		/// Gets the next token in the file
 		/// </summary>
 		/// <returns>The type of the next token</returns>
-		private TokenKind ScanToken() {
-			if ( IsOperator( source.Current ) ) {
-				// operator
+		private TokenKind ScanToken()
+		{
+			if (char.IsLetter(source.Current))
+			{
+				// Matching an identifier
 				TakeIt();
-				return TokenKind.Operator;
-			} else if ( char.IsLetter( source.Current ) ) {
-				// identifier
-				while ( char.IsLetterOrDigit( source.Current ) || source.Current == '_' )
+				while (IsLetterOrDigitOrUnderscore(source.Current))
 					TakeIt();
-
-				if ( ReservedWords.TryGetValue( currentSpelling.ToString(), out TokenKind reservedWordType ) )
-					return reservedWordType;
-
-				return TokenKind.Identifier;
-			} else if (char.IsDigit(source.Current)) {
-				// integer
+				if (ReservedWords.TryGetValue(currentSpelling.ToString(), out TokenKind reservedKind))
+					return reservedKind;
+				else
+					return TokenKind.Identifier;
+			}
+			else if (char.IsDigit(source.Current))
+			{
+				// Matching an integer literal
 				TakeIt();
-				while ( char.IsDigit(source.Current )) TakeIt();
+				while (char.IsDigit(source.Current))
+					TakeIt();
 				return TokenKind.IntLiteral;
 			}
-
-			switch ( source.Current ) {
-				case '\'':
-					// char literal
-					TakeIt();
-					// attempt to find a 'graphic'
-					if ( IsGraphic( source.Current ) ) TakeIt();
-					else {
-						System.Console.WriteLine( "error: not a valid char for charLiteral at line " +  startLocation);
-						return TokenKind.Error;
-					}
-					// if the next char is a ' then we have a char lit else its an error
-					if ( source.Current == '\'' ) TakeIt();
-					else {
-						System.Console.WriteLine( "error: charLiteral not terminated" );
-						return TokenKind.Error;
-					}
-
-					return TokenKind.CharLiteral;
-				case '(':
-					// left bracket
-					TakeIt();
-					return TokenKind.LeftBracket;
-				case ')':
-					// right bracket
-					TakeIt();
-					return TokenKind.RightBracket;
-				case ':':
-					// becomes || colon
-					TakeIt();
-					if ( source.Current == '=' ) {
+			else if (IsOperator(source.Current))
+			{
+				// Matched an operator
+				TakeIt();
+				return TokenKind.Operator;
+			}
+			else
+			{
+				switch (source.Current)
+				{
+					case '\'':
+						// Matching a character literal
 						TakeIt();
-						return TokenKind.Becomes;
-					}
-					return TokenKind.Colon;
-				case ';':
-					// semicolon
-					TakeIt();
-					return TokenKind.Semicolon;
-				case '~':
-					// is
-					TakeIt();
-					return TokenKind.Is;
-				case ',':
-					// comma
-					TakeIt();
-					return TokenKind.Comma;
-				case default( char ):
-					// We have reached the end of the file
-					return TokenKind.EndOfText;
-				default:
-					// We encountered something we weren't expecting
-					TakeIt();
-					return TokenKind.Error;
+						if (IsGraphic(source.Current))
+						{
+							TakeIt();
+							if (source.Current == '\'')
+							{
+								TakeIt();
+								return TokenKind.CharLiteral;
+							}
+							else
+							{
+								// Found something that wasn't a ' as 3rd character
+								TakeIt();
+								return TokenKind.Error;
+							}
+						}
+						else
+						{
+							// Found something that wasn't a graphic as 2nd character
+							TakeIt();
+							return TokenKind.Error;
+						}
+
+					case ';':
+						TakeIt();
+						return TokenKind.Semicolon;
+
+					case ':':
+						TakeIt();
+						if (source.Current == '=')
+						{
+							TakeIt();
+							return TokenKind.Becomes;
+						}
+						else
+							return TokenKind.Colon;
+
+					case '(':
+						TakeIt();
+						return TokenKind.LeftBracket;
+
+					case ')':
+						TakeIt();
+						return TokenKind.RightBracket;
+
+					case '~':
+						TakeIt();
+						return TokenKind.Is;
+
+					case ',':
+						TakeIt();
+						return TokenKind.Comma;
+
+					case '?':
+						TakeIt();
+						return TokenKind.QuestionMark;
+
+					case default(char):
+						// We have reached the end of the file
+						return TokenKind.EndOfText;
+
+					default:
+						// We encountered something we weren't expecting
+						TakeIt();
+						return TokenKind.Error;
+				}
 			}
 		}
 
 		/// <summary>
 		/// Appends the current character to the current token, and gets the next character from the source program
 		/// </summary>
-		private void TakeIt() {
-			currentSpelling.Append( source.Current );
+		private void TakeIt()
+		{
+			currentSpelling.Append(source.Current);
 			source.MoveNext();
 		}
 
 
 
 		/// <summary>
+		/// Checks whether a character is a letter or digit or underscore
+		/// </summary>
+		/// <param name="c">The character to check</param>
+		/// <returns>True if and only if c is a letter or digit or underscore</returns>
+		private static bool IsLetterOrDigitOrUnderscore(char c)
+		{
+			return char.IsLetter(c) || char.IsDigit(c) || c == '_';
+		}
+
+		/// <summary>
+		/// Checks whether a charcter is a graphic
+		/// </summary>
+		/// <param name="c">The character to check</param>
+		/// <returns>True if and only if the character is a graphic</returns>
+		private static bool IsGraphic(char c)
+		{
+			return char.IsLetter(c) || char.IsDigit(c) || IsOperator(c) ||
+						 c == '.' || c == '!' || c == '?' || c == '_' || c == ' ';
+		}
+
+		/// <summary>
 		/// Checks whether a character is an operator
 		/// </summary>
 		/// <param name="c">The character to check</param>
 		/// <returns>True if and only if the character is an operator in the language</returns>
-		private static bool IsOperator(char c) {
-			switch ( c ) {
+		private static bool IsOperator(char c)
+		{
+			switch (c)
+			{
 				case '+':
 				case '-':
 				case '*':
 				case '/':
-				case '=':
 				case '<':
 				case '>':
-				case '\\':
+				case '=':
 					return true;
 				default:
 					return false;
 			}
-		}
-
-		/// <summary>
-		/// Checks whether a character is an graphic
-		/// </summary>
-		/// <param name="c">The character to check</param>
-		/// <returns>True if and only if the character is an graphic in the language</returns>
-		private static bool IsGraphic(char c) {
-			switch ( c ) {
-				case '.':
-				case '!':
-				case '?':
-				case '_':
-				case ' ':
-					return true;
-				default:
-					break;
-			}
-			if ( char.IsLetterOrDigit( c ) || IsOperator( c ))
-				return true;
-			else return false;
-
 		}
 	}
 }

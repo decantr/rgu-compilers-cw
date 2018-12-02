@@ -1,24 +1,17 @@
-/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
- * @Date:   10-Oct-172017
- */
+namespace Triangle.Compiler.SyntacticAnalyzer
+{
+	public enum TokenKind
+	{
+		// non-terminals
+		IntLiteral, Identifier, Operator, CharLiteral,
 
-// Types of token in the source language
-namespace Triangle.Compiler.SyntacticAnalyzer {
-    public enum TokenKind {
+		// reserved words - terminals
+		Begin, Const, Do, Else, End, If, In, Let, Skip, Then, Var, While,
 
-        // non-terminals
-        IntLiteral, Identifier, Operator,
+		// punctuation - terminals (Becomes is for assignment (:=) , Is is for constants (~))
+		Colon, Semicolon, Becomes, Is, LeftBracket, RightBracket, Comma, QuestionMark,
 
-        // reserved words - terminals
-        Begin, Const, Do, Else, End, If, In, Let, Then, Var, While, Skip,
-
-        // punctuation - terminals (Becomes is for assignment (:=) , Is is for constants (~))
-        Colon, Semicolon, Becomes, Is, LeftBracket, RightBracket,
-
-        // special tokens
-        EndOfText, Error,
-
-        // other
-        CharLiteral, Comma
-    }
+		// special tokens
+		EndOfText, Error
+	}
 }

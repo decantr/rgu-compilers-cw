@@ -1,8 +1,10 @@
-namespace Triangle.Compiler.SyntacticAnalyzer {
+namespace Triangle.Compiler.SyntacticAnalyzer
+{
 	/// <summary>
 	/// A token in the source language
 	/// </summary>
-	public class Token {
+	public class Token
+	{
 		/// <summary>
 		/// The kind of a source token
 		/// </summary>
@@ -13,10 +15,11 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// </summary>
 		public string Spelling { get; }
 
-		/// <summary>
-		/// The position of a source token.
-		/// </summary>
 		public SourcePosition Position { get; }
+
+		public Location Start { get { return Position.Start; } }
+
+		public Location Finish { get { return Position.Finish; } }
 
 		/// <summary>
 		/// Creates a token in the source language
@@ -33,7 +36,7 @@ namespace Triangle.Compiler.SyntacticAnalyzer {
 		/// <inheritDoc />
 		public override string ToString()
 		{
-			return string.Format($"Kind={Kind},\tspelling=\"{Spelling}\",\tposition=\"{Position}\"");
+			return string.Format($"Kind={Kind}, spelling=\"{Spelling}\", position=\"{Position}\"");
 		}
 	}
 }

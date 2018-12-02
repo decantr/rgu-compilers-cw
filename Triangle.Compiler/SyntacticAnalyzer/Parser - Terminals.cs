@@ -1,29 +1,77 @@
-/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
- * @Date:   10-Oct-172017
- */
+using Triangle.Compiler.SyntaxTrees.Terminals;
 
-namespace Triangle.Compiler.SyntacticAnalyzer {
-	public partial class Parser {
+namespace Triangle.Compiler.SyntacticAnalyzer
+{
+	public partial class Parser
+	{
 
-		// parses an identifier, and constructs a leaf AST to represent it.
-		void ParseIdentifier() {
-			System.Console.WriteLine( "parsing identifier" );
-			Accept(TokenKind.Identifier);
+		///////////////////////////////////////////////////////////////////////////////
+		//
+		// TERMINALS
+		//
+		///////////////////////////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// Parses an integer-literal, and constructs a leaf AST to represent it.
+		/// </summary>
+		/// <returns>
+		/// an <link>Triangle.SyntaxTrees.Terminals.IntegerLiteral</link>
+		/// </returns>
+		/// <throws type="SyntaxError">
+		/// a syntactic error
+		/// </throws>
+		IntegerLiteral ParseIntegerLiteral()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Integer Literal");
+			Token token = Accept(TokenKind.IntLiteral);
+			return new IntegerLiteral(token);
 		}
 
-		void ParseOperator() {
-			System.Console.WriteLine( "parsing operator" );
-			Accept( TokenKind.Operator );
+		/**
+		 * Parses a character-literal, and constructs a leaf AST to represent it.
+		 *
+		 * @return a {@link triangle.compiler.syntax.trees.terminals.CharacterLiteral}
+		 *
+		 * @throws SyntaxError
+		 *           a syntactic error
+		 */
+		CharacterLiteral ParseCharacterLiteral()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Character Literal");
+			Token token = Accept(TokenKind.CharLiteral);
+			return new CharacterLiteral(token);
 		}
 
-		void ParseIntLiteral() {
-			System.Console.WriteLine( "parsing integer literal" );
-			Accept( TokenKind.IntLiteral );
+		/**
+		 * Parses an identifier, and constructs a leaf AST to represent it.
+		 *
+		 * @return an {@link triangle.compiler.syntax.trees.terminals.Identifier}
+		 *
+		 * @throws SyntaxError
+		 *           a syntactic error
+		 *
+		 */
+		Identifier ParseIdentifier()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Identifier");
+			Token token = Accept(TokenKind.Identifier);
+			return new Identifier(token);
 		}
 
-		void ParseCharLiteral() {
-			System.Console.WriteLine( "parsing character literal" );
-			Accept( TokenKind.CharLiteral );
+		/**
+		 * Parses an operator, and constructs a leaf AST to represent it.
+		 *
+		 * @return an {@link triangle.compiler.syntax.trees.terminals.Operator}
+		 *
+		 * @throws SyntaxError
+		 *           a syntactic error
+		 *
+		 */
+		Operator ParseOperator()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Operator");
+			Token token = Accept(TokenKind.Operator);
+			return new Operator(token);
 		}
 	}
 }

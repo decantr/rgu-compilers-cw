@@ -1,41 +1,101 @@
-/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
- * @Date:   10-Oct-172017
- */
+using Triangle.Compiler.SyntaxTrees.Declarations;
+using Triangle.Compiler.SyntaxTrees.Expressions;
+using Triangle.Compiler.SyntaxTrees.Terminals;
+using Triangle.Compiler.SyntaxTrees.Types;
 
-namespace Triangle.Compiler.SyntacticAnalyzer {
-	public partial class Parser {
+namespace Triangle.Compiler.SyntacticAnalyzer
+{
+	public partial class Parser
+	{
 
-		void ParseDeclaration() {
-			System.Console.WriteLine( "parsing declaration" );
-			ParseSingleDeclaration();
-			while ( tokens.Current.Kind == TokenKind.Semicolon ) {
+		///////////////////////////////////////////////////////////////////////////////
+		//
+		// DECLARATIONS
+		//
+		///////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * Parses the declaration, and constructs an AST to represent its phrase
+		 * structure.
+		 *
+		 * @return a {@link triangle.compiler.syntax.trees.declarations.Declaration}
+		 *
+		 * @throws SyntaxError
+		 *           a syntactic error
+		 *
+		 */
+		Declaration ParseDeclaration()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Declaration");
+			Location startLocation = tokens.Current.Start;
+			Declaration declaration = ParseSingleDeclaration();
+			while (tokens.Current.Kind == TokenKind.Semicolon)
+			{
 				AcceptIt();
-				ParseSingleDeclaration();
+				Declaration declarationSecond = ParseSingleDeclaration();
+				SourcePosition declarationPosition = new SourcePosition(startLocation, tokens.Current.Finish);
+				declaration = new SequentialDeclaration(declaration, declarationSecond, declarationPosition);
 			}
+
+			return declaration;
+
 		}
 
-		void ParseSingleDeclaration() {
-			switch ( tokens.Current.Kind ) {
+		/**
+		 * Parses the single declaration, and constructs an AST to represent its
+		 * phrase structure.
+		 *
+		 * @return a {@link triangle.compiler.syntax.trees.declarations.Declaration}
+		 *
+		 * @throws SyntaxError
+		 *           a syntactic error
+		 *
+		 */
+		Declaration ParseSingleDeclaration()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Single Declaration");
+			Location startLocation = tokens.Current.Start;
+			switch (tokens.Current.Kind)
+			{
+
 				case TokenKind.Const:
-					AcceptIt();
-					ParseIdentifier();
-					Accept( TokenKind.Is );
-					ParseExpression();
-					break;
-				case TokenKind.Var:
-					AcceptIt();
-					ParseIdentifier();
-					Accept( TokenKind.Colon );
-					ParseTypeDenoter();
-					if ( tokens.Current.Kind == TokenKind.Becomes) {
+					{
 						AcceptIt();
-						ParseExpression();
+						Identifier identifier = ParseIdentifier();
+						Accept(TokenKind.Is);
+						Expression expression = ParseExpression();
+						SourcePosition declarationPosition = new SourcePosition(startLocation, tokens.Current.Finish);
+						return new ConstDeclaration(identifier, expression, declarationPosition);
 					}
-					break;
+
+				case TokenKind.Var:
+					{
+						AcceptIt();
+						Identifier identifier = ParseIdentifier();
+						Accept(TokenKind.Colon);
+						TypeDenoter typeDenoter = ParseTypeDenoter();
+						if (tokens.Current.Kind == TokenKind.Becomes)
+						{
+							AcceptIt();
+							Expression expression = ParseExpression();
+							SourcePosition declarationPosition = new SourcePosition(startLocation, tokens.Current.Finish);
+							return new InitDeclaration(identifier, typeDenoter, expression, declarationPosition);
+						}
+						else
+						{
+							SourcePosition declarationPosition = new SourcePosition(startLocation, tokens.Current.Finish);
+							return new VarDeclaration(identifier, typeDenoter, declarationPosition);
+						}
+					}
+
 				default:
-					reporter.ReportError( "declaration" , tokens.Current );
-					break;
+					{
+						RaiseSyntacticError("\"%\" cannot start a declaration", tokens.Current);
+						return null;
+					}
+
 			}
+
 		}
 	}
 }

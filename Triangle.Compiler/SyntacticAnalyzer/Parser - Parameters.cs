@@ -1,29 +1,79 @@
-/* @Author: Shaw Eastwood <1504614@rgu.ac.uk>
- * @Date:   10-Oct-172017
- */
+using Triangle.Compiler.SyntaxTrees.Parameters;
+using Triangle.Compiler.SyntaxTrees.Expressions;
+using Triangle.Compiler.SyntaxTrees.Terminals;
 
-namespace Triangle.Compiler.SyntacticAnalyzer {
-	public partial class Parser {
+namespace Triangle.Compiler.SyntacticAnalyzer
+{
+	public partial class Parser
+	{
 
-		void ParseActualParamater() {
-			System.Console.WriteLine( "parsing paramater" );
-			ParsePartialParamater();
-			while ( tokens.Current.Kind == TokenKind.Comma ) {
-				AcceptIt();
-				ParsePartialParamater();
+		///////////////////////////////////////////////////////////////////////////////
+		//
+		// PARAMETERS
+		//
+		///////////////////////////////////////////////////////////////////////////////
+
+		ParameterSequence ParseParameters()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Parameters");
+			Location startLocation = tokens.Current.Position.Start;
+			if (tokens.Current.Kind == TokenKind.RightBracket)
+			{
+				SourcePosition parameterPosition = new SourcePosition(startLocation, tokens.Current.Position.Finish);
+				return new EmptyParameterSequence(parameterPosition);
 			}
+
+			Parameter p = ParseParameter();
+
+			if (tokens.Current.Kind == TokenKind.Comma)
+			{
+				AcceptIt();
+				ParameterSequence p2 = ParseParameters();
+				SourcePosition parameterPosition = new SourcePosition(startLocation, tokens.Current.Position.Finish);
+				return new MultipleParameterSequence(p, p2, parameterPosition);
+			}
+			else
+			{
+				SourcePosition parameterPosition = new SourcePosition(startLocation, tokens.Current.Position.Finish);
+				return new SingleParameterSequence(p, parameterPosition);
+			}
+
 		}
 
-		void ParsePartialParamater() {
-			switch ( tokens.Current.Kind ) {
+		Parameter ParseParameter()
+		{
+			Compiler.WriteDebuggingInfo("Parsing Parameter");
+			Location startLocation = tokens.Current.Position.Start;
+			switch (tokens.Current.Kind)
+			{
+				case TokenKind.Identifier:
+				case TokenKind.IntLiteral:
+				case TokenKind.CharLiteral:
+				case TokenKind.Operator:
+				case TokenKind.LeftBracket:
+					{
+						Compiler.WriteDebuggingInfo("Parsing Value Parameter");
+						Expression expression = ParseExpression();
+						SourcePosition parameterPosition = new SourcePosition(startLocation, tokens.Current.Position.Finish);
+						return new ValueParameter(expression, parameterPosition);
+					}
+
 				case TokenKind.Var:
-					AcceptIt();
-					ParseIdentifier();
-					break;
+					{
+						Compiler.WriteDebuggingInfo("Parsing Variable Parameter");
+						AcceptIt();
+						Identifier identifier = ParseIdentifier();
+						SourcePosition parameterPosition = new SourcePosition(startLocation, tokens.Current.Position.Finish);
+						return new VarParameter(identifier, parameterPosition);
+					}
+
 				default:
-					ParseExpression();
-					break;
+					{
+						RaiseSyntacticError("\"%\" cannot start a parameter", tokens.Current);
+						return null;
+					}
 			}
+
 		}
 	}
 }
